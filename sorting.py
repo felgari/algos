@@ -20,9 +20,10 @@
 """
 
 import random
+import time
 
 THE_SEED = 1
-NUM_ELTS = 100
+NUM_ELTS = 5000
 MULT = ( 10 * NUM_ELTS )
 
 def test_sort(the_list):
@@ -35,16 +36,73 @@ def test_sort(the_list):
             break
         
     if sort_ok:
-        print "The sorting is ok."
+        print "... the sorting is ok."
     else:
-        print "The sorting is NOT ok."
+        print "... the sorting is NOT ok."
+        
+def selection_sort(the_list):
+    """Reference: https://en.wikipedia.org/wiki/Selection_sort
+    """
+    
+    nops = 0    
+    
+    for j in range(len(the_list)):
+        
+        mini_idx = j
+        
+        for i in range(j + 1, len(the_list)): 
+            
+            if the_list[i] < the_list[mini_idx]:
+                mini_idx = i
+                
+            nops += 1
+                
+        if min != j:
+            the_list[mini_idx], the_list[j] = the_list[j], the_list[mini_idx]
+    
+    return the_list, nops   
+
+def insertion_sort(the_list):
+    """Reference: https://en.wikipedia.org/wiki/Insertion_sort
+    """
+    
+    nops = 0    
+    
+    for i in range(1, len(the_list)):
+        j = i
+        while j > 0 and the_list[j - 1] > the_list[j]:
+            the_list[j - 1], the_list[j] = the_list[j], the_list[j - 1]
+            j -= 1
+            
+            nops += 1
+    
+    return the_list, nops
+
+def bubble_sort(the_list):
+    """Reference: https://en.wikipedia.org/wiki/Bubble_sort
+    """
+    
+    nops = 0    
+    
+    max_pos = len(the_list) - 1
+    
+    for i in range(max_pos):
+        for j in range(0, max_pos - i):
+            if the_list[j] > the_list[j+1]:
+                the_list[j+1], the_list[j] = the_list[j], the_list[j+1]
+                
+            nops += 1
+                
+    return the_list, nops       
 
 def quick_sort(the_list):
     """Reference: https://en.wikipedia.org/wiki/Quicksort
     """
     
+    nops = 0    
+    
     if len(the_list) <= 1:
-        return the_list
+        return the_list, nops
     
     less = []
     pivot = [the_list[-1]]
@@ -57,24 +115,17 @@ def quick_sort(the_list):
             more.append(the_list[j])
         else:
             pivot.append(the_list[j])
+            
+        nops += 1
+        
+    qless, lnops = quick_sort(less)  
+    qmore, mnops = quick_sort(more)
     
-    return quick_sort(less) + pivot + quick_sort(more) 
-
-def bubble_sort(the_list):
-    """Reference: https://en.wikipedia.org/wiki/Bubble_sort
-    """
-    
-    max_pos = len(the_list) - 1
-    
-    for i in range(max_pos):
-        for j in range(0, max_pos - i):
-            if the_list[j] > the_list[j+1]:
-                the_list[j+1], the_list[j] = the_list[j], the_list[j+1]
-                
-    return the_list  
+    return (qless + pivot + qmore), (nops + lnops + mnops) 
 
 def merge(left, right): 
     
+    nops = 0
     result = []
     
     left_len = len(left)
@@ -90,41 +141,33 @@ def merge(left, right):
         else:
             result.append(right[r_idx])
             r_idx += 1
+            
+        nops += 1
     
     result.extend(left[l_idx:])
     result.extend(right[r_idx:])
     
-    return result
+    return result, nops
 
 def merge_sort(the_list):
     """Reference: https://en.wikipedia.org/wiki/Merge_sort
     """
     
     if len(the_list) <= 1:
-        return the_list
+        return the_list, 0
     
     middle_pos = len(the_list) / 2
             
-    left = merge_sort(the_list[:middle_pos])
-    right = merge_sort(the_list[middle_pos:])
+    left, lnops = merge_sort(the_list[:middle_pos])
+    right, rnops = merge_sort(the_list[middle_pos:])
     
-    return merge(left, right)
+    mresult, mnops = merge(left, right)
+    
+    return mresult, mnops + lnops + rnops
 
-def selection_sort(the_list):
-    """Reference: https://en.wikipedia.org/wiki/Selection_sort
+def tim_sort(the_list):
+    """Reference: https://en.wikipedia.org/wiki/Timsort
     """
-    
-    for j in range(len(the_list)):
-        
-        mini = j
-        
-        for i in range(j + 1, len(the_list)): 
-            
-            if the_list[i] < the_list[mini]:
-                mini = i
-                
-        if min != j:
-            the_list[mini], the_list[j] = the_list[j], the_list[mini]
     
     return the_list
 
@@ -136,39 +179,33 @@ def generate_random_list():
     
     return the_list
 
-def main():
+def perform_sort(sort_name, sort_fun):
     
-    the_list = generate_random_list()
+    print "- Trying %s sort ..." % sort_name
     
-    print "Trying selection sort."
+    the_list = generate_random_list()    
     
-    list_sorted = selection_sort(the_list)
+    start = time.time()
     
-    test_sort(list_sorted)
+    list_sorted, nops = sort_fun(the_list)
     
-    print "Trying quick sort."
+    end = time.time()
     
-    the_list = generate_random_list()
-    
-    list_sorted = quick_sort(the_list)
+    print "%d operations. Time elapsed: %s s." % (nops, end - start)
     
     test_sort(list_sorted)    
+
+def main():
     
-    print "Trying bubble sort."
+    sorting_algos = { "selection" : selection_sort,
+                      "insertion" : insertion_sort,
+                      "bubble": bubble_sort,
+                      "quick" : quick_sort,
+                      "merge" : merge_sort,
+                      "timsort": tim_sort }
     
-    the_list = generate_random_list()
-    
-    list_sorted = bubble_sort(the_list)
-    
-    test_sort(list_sorted)
-    
-    print "Trying merge sort."
-    
-    the_list = generate_random_list()
-    
-    list_sorted = merge_sort(the_list)
-    
-    test_sort(list_sorted)
+    for k, v in sorting_algos.items():    
+        perform_sort(k, v)
 
 if __name__ == "__main__":
     
