@@ -17,7 +17,7 @@
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 """Script that implements the doomsday rule, a way to calculate the day of the 
-week. See https://en.wikipedia.org/wiki/Doomsday_rule
+week for a given date. See https://en.wikipedia.org/wiki/Doomsday_rule
 """
 
 import sys
@@ -38,6 +38,10 @@ MEM_DATE = [ 3, 28, 0, 4, 9, 6, 11, 8, 5, 10, 7, 12 ]
 MEM_DATE_LEAP = [ 4, 29 ] + MEM_DATE[2:]
 
 def adjust_year(year):
+    """The calculation is only for years between 1800 and 2199. So for other
+    years, adjust the year to this range knowing that these calculations are
+    the same for years separated 400 years.
+    """
     
     year_int = int(year)
     
@@ -52,6 +56,7 @@ def adjust_year(year):
     return str(year_int)
 
 def check_date(day, month, year):
+    """Check the date received."""
     
     check_ok = True
     
@@ -78,10 +83,13 @@ def check_date(day, month, year):
     return check_ok
 
 def leap_year(year):
+    """ Multiplier of 4 not of 100 but yes 400.
+    """
     
-    return year % 400 == 0 or ( year % 4 == 0 and not year % 100 == 0 )
+    return ( year % 4 == 0 and not year % 100 == 0 ) or year % 400 == 0
 
-def doomsday_rule(day, month, year):
+def doomsday_rule(year):
+    """Just apply the doomsday rule. """
     
     year_2_last = int(year[-2:])
     
@@ -101,27 +109,31 @@ def main(day, month, year):
     
     if check_date(day, month, new_year):
     
-        doomsday = doomsday_rule(day, month, new_year)
+        doomsday = doomsday_rule(new_year)
         
+        # Calculations to get the day of the week from the doomsday day
+        # depending on the day and month.
         if leap_year(int(year)):
             mem_date = MEM_DATE_LEAP
         else:
             mem_date = MEM_DATE
             
-        month_ref = mem_date[int(month) - 1]
+        day_ref = mem_date[int(month) - 1]
         
         day_int = int(day)
         
-        if day_int < month_ref:
-            the_day = (doomsday - month_ref + day_int) % len(NAME_OF_DAY_CONV)        
-        elif day_int > month_ref:
-            the_day = (month_ref + day_int) % len(NAME_OF_DAY_CONV)    
+        if day_int < day_ref:
+            the_day = (doomsday - day_ref + day_int) % len(NAME_OF_DAY_CONV)        
+        elif day_int > day_ref:
+            the_day = (doomsday + day_int - day_ref) % len(NAME_OF_DAY_CONV)    
         else:
             the_day = doomsday
         
         if doomsday >= 0:    
             print "Date (d/m/y): %s/%s/%s is %s" % \
                 (day, month, year, NAME_OF_DAY_CONV[the_day])
+        else:
+            print "Doomsday calculated not valid."
 
 if __name__ == "__main__":
     
