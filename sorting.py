@@ -46,17 +46,23 @@ def selection_sort(the_list):
     
     nops = 0    
     
+    # Walk the list to set in each iteration the minimum item of the
+    # rest of the list in position j.
     for j in range(len(the_list)):
         
         mini_idx = j
         
+        # Walk from j to the end of the list looking for the index of the
+        # minimum item.
         for i in range(j + 1, len(the_list)): 
             
+            # Find the index of the minor element.
             if the_list[i] < the_list[mini_idx]:
                 mini_idx = i
                 
             nops += 1
                 
+        # Swap the minimum item found with that in j.
         if min != j:
             the_list[mini_idx], the_list[j] = the_list[j], the_list[mini_idx]
     
@@ -68,9 +74,14 @@ def insertion_sort(the_list):
     
     nops = 0    
     
+    # Walk the list from the second item to the end.
     for i in range(1, len(the_list)):
+        
         j = i
-        while j > 0 and the_list[j - 1] > the_list[j]:
+        
+        # Walk a sublist from i to 0 while adjacent items are out of order,
+        # and in that case swap them.
+        while j and the_list[j - 1] > the_list[j]:
             the_list[j - 1], the_list[j] = the_list[j], the_list[j - 1]
             j -= 1
             
@@ -169,7 +180,7 @@ def tim_sort(the_list):
     """Reference: https://en.wikipedia.org/wiki/Timsort
     """
     
-    return the_list
+    return the_list, 0
 
 def generate_random_list():
         
