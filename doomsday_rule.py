@@ -50,7 +50,7 @@ def adjust_year(year):
     else:
         cycle = - YEARS_CYCLE 
     
-    while year_int < MIN_YEAR or year_int > MAX_YEAR:
+    while not ( MIN_YEAR <= year_int <= MAX_YEAR ):
         year_int += cycle
         
     return str(year_int)
@@ -61,24 +61,24 @@ def check_date(day, month, year):
     check_ok = True
     
     year_int = int(year)
-    mont_int = int(month)
+    month_int = int(month)
     day_int = int(day)
 
-    if year_int < MIN_YEAR or year_int > MAX_YEAR:        
+    if not ( MIN_YEAR <= year_int <= MAX_YEAR ):        
         print "The year must be between %d and %d" % (MIN_YEAR, MAX_YEAR)
         check_ok = False
-    elif mont_int < MIN_MONTH or mont_int > MAX_MONTH :
+    elif not ( MIN_MONTH <= month_int <= MAX_MONTH ):
         print "The month must be between %d and %d" % (MIN_MONTH, MAX_MONTH)
         check_ok = False
     else:
-        if leap_year(year_int):
+        max_month = DAYS_MONTH[month_int - 1]
+        
+        if month_int == 2 and leap_year(year_int):
             max_month = 29
-        else:
-            max_month = DAYS_MONTH[mont_int - 1]
-            
-            if day_int < 1 or day_int > max_month:
-                print "The day must be between %d and %d" % (1, max_month)
-                check_ok = False
+                       
+        if not ( 1 <= day_int <= max_month ):
+            print "The day must be between %d and %d" % (1, max_month)
+            check_ok = False
         
     return check_ok
 
