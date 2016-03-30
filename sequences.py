@@ -16,7 +16,7 @@
 # You should have received a copy of the GNU General Public License
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 
-"""Script woth algorithms with sequences as random numbers generation, finding
+"""Script with algorithms with sequences as random numbers generation, finding
 cycles in sequences and looking for substrings.
 """
 
@@ -25,9 +25,6 @@ SEED = 3771
 #M_BBS = (71 * 73)
 #M_BBS = (311 * 313) 
 M_BBS = (523 * 541)
-
-STR_1 = 'ABCDEFGFGFHIJK'
-SUBSTR_1 = 'FGFH'
 
 # Generation of random numbers.
 def blum_blum_shum(n):
@@ -101,25 +98,6 @@ def brent(fun, x0):
  
     return lam, mu
 
-# Looking for repeated substrings in a string.
-def Knuth_Morris_Pratt(s, subs):
-    """Reference: https://en.wikipedia.org/wiki/Knuth%E2%80%93Morris%E2%80%93Pratt_algorithm
-    Without partial match table.
-    """ 
-    
-    s_idx = subs_idx = 0
-    
-    while s_idx + subs_idx < len(s) - 1:
-        if subs[subs_idx] == s[s_idx + subs_idx]:
-            if subs_idx == len(subs) - 1:
-                return s_idx 
-            subs_idx += 1
-        else:
-            subs_idx = 0
-            s_idx += 1
-    
-    return -1
-
 def main():
     
     print "Generating random numbers with Blum, Blum, Shum."
@@ -128,9 +106,6 @@ def main():
 
     print "Brent -> Shortest cycle: %d, position of the first cycle: %d" % \
             brent(blum_blum_shum, SEED)   
-            
-    print "'%s' is found in '%s' with Knuth-Morris-Pratt at position: %d" % \
-        (SUBSTR_1, STR_1, Knuth_Morris_Pratt(STR_1, SUBSTR_1))
 
 if __name__ == "__main__":
     
