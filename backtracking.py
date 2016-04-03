@@ -20,11 +20,13 @@
 """
 
 import sys
+import random
 
 NUM_ARGS = 2
-MIN_SIZE = 3
+
+MIN_SIZE = 1
+
 QUEEN_BOARD_SIZE = 8
-SUDOKU_BOARD_SIZE = 9
 QUEEN_VAL = True 
 NO_QUEEN_VAL = False
 QUEEN_STR_VAL = '*' 
@@ -180,19 +182,6 @@ def resolve_eight_queens():
     board = QueensBoard()
     
     eiqht_queens(board, 0, 0)    
-    
-def init_sudoku_board():
-
-    board = [[ 0 for _ in range(SUDOKU_BOARD_SIZE)] \
-                for _ in range(SUDOKU_BOARD_SIZE)]
-    
-    return board
-    
-def resolve_sudoku():
-    
-    board = init_sudoku_board()
-    
-    print "Sudoku pending"
 
 def main(size):
     
@@ -200,9 +189,7 @@ def main(size):
     
     print "Fibonacci of %d is: %d" % (size, fibonacci(size))       
     
-    resolve_eight_queens()
-    
-    resolve_sudoku()    
+    resolve_eight_queens() 
     
     return 0
 
