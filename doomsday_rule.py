@@ -93,9 +93,7 @@ def doomsday_rule(year):
     
     year_2_last = int(year[-2:])
     
-    # Using // to state clearly that we should get the division floor.
-    a = year_2_last // 12
-    b = year_2_last % 12
+    a, b = divmod(year_2_last, 12)
     c = b // 4
     
     doomsday = (a + b + c + ANCHOR_DAY[int(year[:2]) - 18]) % \
