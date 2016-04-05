@@ -16,7 +16,7 @@
 # You should have received a copy of the GNU General Public License
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 
-"""Script with algorithms related to strings.
+"""Algorithms related to strings.
 """
 
 import sys
@@ -27,9 +27,57 @@ SUBSTR_1 = 'FGFH'
 NUM_ARGS = 3
 ARGS_LCST = 4 
 
+def do_reverse(s):
+    
+    rev_list = [ s[i] for i in range(len(s) - 1, -1, -1) ]
+        
+    return ''.join(rev_list)
+
+def uses_only(s1, s2):
+    
+    only = [ ch in s2 for ch in s1 ]
+    
+    return all(only) 
+
+def most_frequent(s1):
+    
+    freq = dict()
+    
+    for ch in s1:
+        if ch in freq:
+            freq[ch] += 1
+        else:
+            freq[ch] = 1
+    
+    return sorted(freq, key=freq.get, reverse=True)
+
+def is_abecedarian(s1):
+    
+    return all([ s1[i] <= s1[i+1] for i in range(0, len(s1) - 1)])
+
+def is_palindrome(s1):
+    """Without using reverse."""
+    
+    le = len(s1)
+    
+    return all([ s1[i] == s1[le-i-1] for i in range(le / 2) ])
+
+def is_anagram(s1, s2):
+    
+    is_anag = False
+    
+    if len(s1) == len(s2):
+        s1_sorted = sorted(s1)
+        s2_sorted = sorted(s2)
+        
+        is_anag = ( s1_sorted == s2_sorted )
+    
+    return is_anag
+
 # Looking for repeated substrings in a string.
 def Knuth_Morris_Pratt(s, subs):
-    """Reference: https://en.wikipedia.org/wiki/Knuth%E2%80%93Morris%E2%80%93Pratt_algorithm
+    """Reference:https://en.wikipedia.org/wiki/Knuth%E2%80%93Morris%E2%80%93Pratt_algorithm
+    
     Without partial match table.
     """ 
     
@@ -67,9 +115,9 @@ def longest_common_substring(s1, s2):
                     
                 if m[i][j] > greatest_len:
                     greatest_len = m[i][j]
-                    common_str = s1[i-greatest_len+1:i] 
+                    common_str = s1[i-greatest_len+1:i+1] 
                 elif m[i][j] == greatest_len:
-                    common_str = common_str + s1[i-greatest_len+1:i]
+                    common_str = common_str + s1[i-greatest_len+1:i+1]
                     
     return common_str
     
@@ -78,10 +126,23 @@ if __name__ == "__main__":
     if len(sys.argv) < NUM_ARGS:
         print"ERROR: Arguments needed. Use: %s num1 num2 ..." % sys.argv[0]
     else:
+        s1 = sys.argv[1]
+        s2 = sys.argv[2]
+        
+        print "Reverse of %s is %s" % (s1, do_reverse(s1))
+        
+        print "%s uses only chars in %s is: %s" % (s1, s2, uses_only(s1, s2))
+        
+        print "%s most frequent characters are: %s" % (s1, most_frequent(s1))
+        
+        print "%s is abcedarian: %s" % (s1, is_abecedarian(s1))
+        
+        print "%s is palindrome: %s" % (s1, is_palindrome(s1))
+        
+        print "%s and %s are anagrams: %s" % (s1, s2, is_anagram(s1, s2))
+                
         print "A substring of %s in %s (with Knuth-Morris-Pratt) is at: %d" % \
-            (sys.argv[1], sys.argv[2], 
-             Knuth_Morris_Pratt(sys.argv[1], sys.argv[2]))
+            (s1, s2, Knuth_Morris_Pratt(s1, s2))
         
         print "Longest common substring of %s and %s is: %s" % \
-            (sys.argv[1], sys.argv[2], 
-             longest_common_substring(sys.argv[1], sys.argv[2]))
+            (s1, s2, longest_common_substring(s1, s2))
