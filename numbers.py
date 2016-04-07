@@ -181,7 +181,10 @@ def primes(n):
     end = int(round(time.time() * 1000.0))
     print "Other sieve, list of primes until %d has %d in %g s (using %d iterations)" \
         % (n, len(primes), (end - start) / 1000.0, it)        
-    
+        
+    primes = [2]
+    [ primes.append(i) for i in range(3,1000) if all(i % n != 0 for n in primes)]
+    print "Primes generation using a list comprehension: %s" % primes
     
 if __name__ == "__main__":
     
